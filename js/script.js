@@ -10,9 +10,14 @@ var PreviousCalculationMethod = '';
 
 
 $('button').on('click', function(){
+	console.log('ReadyToCalculate: ' + ReadyToCalculate);
+	console.log('CurrentInputDisplay: ' + CurrentInputDisplay);
+	console.log('PreviousCalculationMethod: ' + PreviousCalculationMethod);
 	var btn = $(this);
 	if($(btn).hasClass('input-number')){
-		
+		if(PreviousCalculationMethod !== ''){
+			ReadyToCalculate = true;
+		}
 		CurrentInputDisplay += $(btn).val();
 		displayCurrentInput();
 
@@ -54,66 +59,67 @@ $('button').on('click', function(){
 
 
 var parseCurrentValue = function(currOperation, prevOperation, btnVal){
-	console.log('Ready to calculate:' + ReadyToCalculate);
-	console.log(CurrentInputDisplay);
 	currentValueArray = CurrentInputDisplay.split(prevOperation);
-	console.log(currentValueArray);
 	firstValue = currentValueArray[0];
 	secondValue = currentValueArray[1];
 	switch(prevOperation){
 		case '+':
-			addInputs(firstValue, secondValue);
+			addInputs(firstValue, secondValue, btnVal);
 			break;
 		case '-':
-			subtractInputs(firstValue, secondValue);
+			subtractInputs(firstValue, secondValue, btnVal);
 			break;
 		case '/':
-			divideInputs(firstValue, secondValue);
+			divideInputs(firstValue, secondValue, btnVal);
 			break;
 		case 'x':
-			console.log(btnVal);
-			multiplyInputs(firstValue, secondValue);
+			multiplyInputs(firstValue, secondValue, btnVal);
 			break;
 		case '%':
-			modulusInputs(firstValue, secondValue);
+			modulusInputs(firstValue, secondValue, btnVal);
 			break;
 	}
-	PreviousCalculationMethod = prevOperation;
+	PreviousCalculationMethod = currOperation;
 }
 
 
-var addInputs = function(first, second){
+var addInputs = function(first, second, btnVal){
 	console.log('from adding');
 	currentTotal = parseFloat(first) + parseFloat(second);
 	CurrentInputDisplay  = checkForExtendedDecimal(currentTotal);
+	CurrentInputDisplay = checkForEquals(btnVal);
 	displayCurrentInput();
 }
 
-var subtractInputs = function(first, second){
+var subtractInputs = function(first, second, btnVal){
 	console.log('from subtracting');
 	currentTotal = parseFloat(first) - parseFloat(second);
 	CurrentInputDisplay  = checkForExtendedDecimal(currentTotal);
+	CurrentInputDisplay = checkForEquals(btnVal);
 	displayCurrentInput();
 }
 
-var multiplyInputs = function(first, second){
+var multiplyInputs = function(first, second, btnVal){
 	console.log('from multiplying');
 	currentTotal = parseFloat(first) * parseFloat(second);
 	CurrentInputDisplay  = checkForExtendedDecimal(currentTotal);
+	CurrentInputDisplay = checkForEquals(btnVal);
 	displayCurrentInput();
 }
 
-var divideInputs = function(first, second){
+var divideInputs = function(first, second, btnVal){
 	console.log('from dividing');
 	currentTotal = parseFloat(first) / parseFloat(second);
 	CurrentInputDisplay  = checkForExtendedDecimal(currentTotal);
+	CurrentInputDisplay = checkForEquals(btnVal);
 	displayCurrentInput();
 }
 
-var modulusInputs = function(first, second){
+var modulusInputs = function(first, second, btnVal){
 	console.log('from modulus');
 	currentTotal = parseFloat(first) % parseFloat(second);
 	CurrentInputDisplay  = checkForExtendedDecimal(currentTotal);
+	CurrentInputDisplay = checkForEquals(btnVal);
 	displayCurrentInput();
 
 }
@@ -130,6 +136,15 @@ var checkForExtendedDecimal = function(currentTotal){
 	}
 
 	return currentTotal;
+}
+
+var checkForEquals = function(btnVal){
+	if (btnVal === '='){
+		return CurrentInputDisplay;
+	} else {
+		CurrentInputDisplay += btnVal;
+		return CurrentInputDisplay;
+	}
 }
 
 
